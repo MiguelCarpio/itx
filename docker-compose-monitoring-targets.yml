@@ -1,0 +1,87 @@
+services:
+  # HTTP/HTTPS Web Servers
+  nginx-web:
+    image: nginx:alpine
+    container_name: monitoring-nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx-html:/usr/share/nginx/html:ro
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # DNS Server
+  dns-server:
+    image: coredns/coredns:latest
+    container_name: monitoring-dns
+    ports:
+      - "15353:53/udp"
+      - "15353:53/tcp"
+    volumes:
+      - ./coredns:/etc/coredns:ro
+    command: -conf /etc/coredns/Corefile
+    restart: unless-stopped
+
+  # FTP/SFTP Server
+  sftp-server:
+    image: atmoz/sftp:latest
+    container_name: monitoring-sftp
+    ports:
+      - "2222:22"
+    command: testuser:testpass:1001
+    restart: unless-stopped
+
+  # Redis Cache
+  redis-cache:
+    image: redis:alpine
+    container_name: monitoring-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # SMTP Server (for testing)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: monitoring-smtp
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    restart: unless-stopped
+
+  # MariaDB Database
+  mariadb:
+    image: mariadb:latest
+    container_name: monitoring-mariadb
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mariapass
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: mariauser
+      MYSQL_PASSWORD: mariapass
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  mariadb-data:
+
+networks:
+  default:
+    name: icinga-playground
+    external: true
