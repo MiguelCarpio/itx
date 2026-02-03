@@ -2,6 +2,9 @@
 
 .DEFAULT_GOAL := help
 
+# Working directory
+ICINGA_LAB_DIR := /ITX_dir/$(shell echo $$USER)/icinga-lab
+
 # Detect docker-compose command
 DOCKER_COMPOSE := $(shell command -v docker-compose 2> /dev/null)
 ifndef DOCKER_COMPOSE
@@ -25,13 +28,26 @@ check-docker-compose:
 	fi
 
 check-icinga-clone:
-	@if [ ! -d "docker-compose-icinga" ]; then \
+	@echo "Creating working directory $(ICINGA_LAB_DIR)..."
+	@mkdir -p $(ICINGA_LAB_DIR)
+	@if [ ! -d "$(ICINGA_LAB_DIR)/docker-compose-icinga" ]; then \
 		echo "Cloning repository..."; \
-		git clone $(REPO_URL); \
+		cd $(ICINGA_LAB_DIR) && git clone $(REPO_URL); \
 	else \
 		echo "Repository already exists. Pulling latest changes..."; \
-		cd docker-compose-icinga && git pull; \
+		cd $(ICINGA_LAB_DIR)/docker-compose-icinga && git pull; \
 	fi
+	@echo "Copying monitoring target configuration files..."
+	@cp -r nginx-html coredns docker-compose-monitoring-targets.yml icinga2-monitoring-targets.conf $(ICINGA_LAB_DIR)/ 2>/dev/null || true
+	@echo "Fixing paths in docker-compose.yml..."
+	@cd $(ICINGA_LAB_DIR)/docker-compose-icinga && \
+	git checkout docker-compose.yml && \
+	sed -i '/^version:/d' docker-compose.yml && \
+	sed -i 's|\./icingadb.conf:|'$$(pwd)'/icingadb.conf:|g' docker-compose.yml && \
+	sed -i 's|\./icingaweb-api-user.conf:|'$$(pwd)'/icingaweb-api-user.conf:|g' docker-compose.yml && \
+	sed -i 's|\./init-icinga2.sh:|'$$(pwd)'/init-icinga2.sh:|g' docker-compose.yml && \
+	sed -i 's|\./icinga2.conf.d:|'$$(pwd)'/icinga2.conf.d:|g' docker-compose.yml && \
+	sed -i 's|\./env/mysql/:|'$$(pwd)'/env/mysql/:|g' docker-compose.yml
 
 help:
 	@echo "Icinga2 with IcingaWeb2 Deployment"
@@ -80,10 +96,10 @@ deploy-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "===================================="
 	@echo ""
 	@echo "Step 1: Deploying Icinga2 with IcingaWeb2..."
-	@cd docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER up -d
+	@cd $(ICINGA_LAB_DIR)/docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER up -d
 	@echo ""
 	@echo "Step 2: Deploying monitoring target services..."
-	@$(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml up -d
+	@cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml up -d
 	@echo ""
 	@echo "================================"
 	@echo "Icinga Lab Deployment Complete!"
@@ -108,51 +124,52 @@ deploy-icinga-lab: check-docker-compose check-icinga-clone
 
 start-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Starting Icinga stack..."
-	@cd docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER start
+	@cd $(ICINGA_LAB_DIR)/docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER start
 	@echo "Starting monitoring target services..."
-	@$(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml start
+	@cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml start
 	@echo "All services started successfully!"
 
 stop-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Stopping monitoring target services..."
-	@$(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml stop
+	@cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml stop
 	@echo "Stopping Icinga stack..."
-	@cd docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER stop
+	@cd $(ICINGA_LAB_DIR)/docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER stop
 	@echo "All services stopped successfully!"
 
 restart-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Restarting Icinga stack..."
-	@cd docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER restart
+	@cd $(ICINGA_LAB_DIR)/docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER restart
 	@echo "Restarting monitoring target services..."
-	@$(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml restart
+	@cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml restart
 	@echo "All services restarted successfully!"
 
 status-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Icinga Container Status:"
 	@echo "========================"
-	@cd docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER ps
+	@cd $(ICINGA_LAB_DIR)/docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER ps
 	@echo ""
 	@echo "Monitoring Target Status:"
 	@echo "========================="
-	@$(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml ps
+	@cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml ps
 
 logs-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Showing logs from all services (Ctrl+C to exit)..."
 	@echo "===================================================="
-	@cd docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER logs --tail=50
-	@$(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml logs -f
+	@cd $(ICINGA_LAB_DIR)/docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER logs --tail=50
+	@cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml logs -f
 
 clean-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "WARNING: This will remove all containers, volumes, and the cloned repository!"
-	@read -p "Are you sure? [y/N] " -n 1 -r; \
+	@bash -c 'read -p "Are you sure? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
 		echo "Stopping and removing monitoring targets..."; \
-		$(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml down -v; \
+		cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml down -v; \
 		echo "Stopping and removing Icinga stack..."; \
-		cd docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER down -v; \
-		cd .. && rm -rf docker-compose-icinga; \
+		cd $(ICINGA_LAB_DIR)/docker-compose-icinga && $(DOCKER_COMPOSE) -p icinga-$$USER down -v; \
+		echo "Removing $(ICINGA_LAB_DIR)..."; \
+		rm -rf $(ICINGA_LAB_DIR); \
 		echo "Cleanup complete!"; \
 	else \
 		echo "Cancelled."; \
-	fi
+	fi'
