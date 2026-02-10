@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help deploy-gns3
+.PHONY: help deploy-gns3 run-gns3 gns3
 
 deploy-gns3:
 	@echo "Setting up GNS3 environment..."
@@ -36,4 +36,9 @@ EOF
 	fi
 	@echo "GNS3 deployment complete!"
 	@echo "Run 'source ~/GNS3/bin/activate && gns3' to start GNS3"
+
+run-gns3:
+	@bash -c "source ~/GNS3/bin/activate && gns3"
+
+gns3: run-gns3
 
