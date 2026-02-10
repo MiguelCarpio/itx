@@ -1,12 +1,13 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help deploy-gns3 run-gns3 gns3
+.PHONY: help deploy-gns3 run-gns3 gns3 clean-gns3
 
 help:
 	@echo "Available targets:"
 	@echo "  deploy-gns3  - Install and configure GNS3"
 	@echo "  run-gns3     - Run GNS3 (alias: gns3)"
 	@echo "  gns3         - Alias for run-gns3"
+	@echo "  clean-gns3   - Remove GNS3 installation and configuration"
 
 deploy-gns3:
 	@echo "Setting up GNS3 environment..."
@@ -45,4 +46,14 @@ run-gns3:
 	@bash -c "source ~/GNS3/bin/activate && gns3"
 
 gns3: run-gns3
+
+clean-gns3:
+	@echo "Cleaning GNS3 installation..."
+	@echo "Removing virtual environment..."
+	@rm -rf ~/GNS3
+	@echo "Removing configuration files..."
+	@rm -rf ~/.config/GNS3
+	@echo "Removing data directories..."
+	@rm -rf /ITX_dir/$${USER}/GNS3/.local/share/GNS3
+	@echo "GNS3 cleanup complete!"
 
