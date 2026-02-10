@@ -23,14 +23,21 @@ deploy-gns3:
 		echo "Creating GNS3 server configuration..."; \
 		mkdir -p "$$GNS3_CONFIG_DIR"; \
 		printf "[Server]\nresources_path = /ITX_dir/$$USER/GNS3/.local/share/GNS3\nimages_path = /ITX_dir/$$USER/GNS3/.local/share/GNS3/images\nprojects_path = /ITX_dir/$$USER/GNS3/.local/share/GNS3/projects\nappliances_path = /ITX_dir/$$USER/GNS3/.local/share/GNS3/appliances\nsymbols_path = /ITX_dir/$$USER/GNS3/.local/share/GNS3/symbols\nconfigs_path = /ITX_dir/$$USER/GNS3/.local/share/GNS3/configs\n\n[Docker]\nenabled = true\n" > "$$GNS3_CONFIG_DIR/gns3_server.conf"; \
+		if [ ! -f "$$GNS3_CONFIG_DIR/gns3_gui.conf" ]; then \
+			echo "Generating GNS3 GUI configuration..."; \
+			echo "Starting GNS3 briefly to create config file..."; \
+			source ~/GNS3/bin/activate && timeout 10 gns3 >/dev/null 2>&1 || true; \
+			sleep 2; \
+			if [ ! -f "$$GNS3_CONFIG_DIR/gns3_gui.conf" ]; then \
+				echo "Warning: Failed to generate gns3_gui.conf automatically."; \
+				echo "Please start GNS3 manually once, then run make deploy-gns3 again."; \
+				exit 0; \
+			fi; \
+		fi; \
 		echo "Updating GNS3 GUI configuration..."; \
-		if [ -f "$$GNS3_CONFIG_DIR/gns3_gui.conf" ]; then \
-			sed -i "s|$$HOME/GNS3|/ITX_dir/$$USER/GNS3/.local/share/GNS3|g" "$$GNS3_CONFIG_DIR/gns3_gui.conf"; \
-			sed -i "s|\"telnet_console_command\": \"xterm -T \\\"{name}\\\" -e \\\"telnet {host} {port}\\\"\"|\"telnet_console_command\": \"xterm -fa Monospace -fs 12 -geometry 120x40 -sb -T \\\"{name}\\\" -e \\\"telnet {host} {port}\\\"\"|" "$$GNS3_CONFIG_DIR/gns3_gui.conf"; \
-			echo "GNS3 GUI configuration updated at $$GNS3_CONFIG_DIR/gns3_gui.conf"; \
-		else \
-			echo "Warning: gns3_gui.conf not found at $$GNS3_CONFIG_DIR. Start GNS3 once to generate it, then run this target again."; \
-		fi'
+		sed -i "s|$$HOME/GNS3|/ITX_dir/$$USER/GNS3/.local/share/GNS3|g" "$$GNS3_CONFIG_DIR/gns3_gui.conf"; \
+		sed -i "s|\"telnet_console_command\": \"xterm -T \\\"{name}\\\" -e \\\"telnet {host} {port}\\\"\"|\"telnet_console_command\": \"xterm -fa Monospace -fs 12 -geometry 120x40 -sb -T \\\"{name}\\\" -e \\\"telnet {host} {port}\\\"\"|" "$$GNS3_CONFIG_DIR/gns3_gui.conf"; \
+		echo "GNS3 GUI configuration updated successfully!"'
 	@echo "GNS3 deployment complete!"
 	@echo "Run 'make gns3' to start GNS3"
 
