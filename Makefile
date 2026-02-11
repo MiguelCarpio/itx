@@ -37,8 +37,8 @@ deploy-gns3:
 		fi; \
 		echo "Updating GNS3 GUI configuration..."; \
 		sed -i "s|$$HOME/GNS3|/ITX_dir/$$USER/GNS3/.local/share/GNS3|g" "$$GNS3_CONFIG_DIR/gns3_gui.conf"; \
-		sed -i "s|\"telnet_console_command\": \"xterm -T \\\"{name}\\\" -e \\\"telnet {host} {port}\\\"\"|\"telnet_console_command\": \"xterm -fa Monospace -fs 12 -geometry 120x40 -sb -T \\\"{name}\\\" -e \\\"telnet {host} {port}\\\"\"|" "$$GNS3_CONFIG_DIR/gns3_gui.conf"; \
-		echo "GNS3 GUI configuration updated successfully!"'
+		sed -i "s|\"telnet_console_command\": \"xterm -T \\\\\"{name}\\\\\" -e \\\\\"telnet {host} {port}\\\\\"\",|\"telnet_console_command\": \"xterm -fa Monospace -fs 12 -geometry 120x40 -sb -T \\\\\"{name}\\\\\" -e \\\\\"telnet {host} {port}\\\\\"\",|" "$$GNS3_CONFIG_DIR/gns3_gui.conf"; \
+			echo "GNS3 GUI configuration updated successfully!"'
 	@echo "GNS3 deployment complete!"
 	@echo "Run 'make gns3' to start GNS3"
 
