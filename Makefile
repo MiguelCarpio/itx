@@ -38,7 +38,7 @@ check-icinga-clone:
 		cd $(ICINGA_LAB_DIR)/docker-compose-icinga && git pull; \
 	fi
 	@echo "Copying monitoring target configuration files..."
-	@cp -r nginx-html coredns docker-compose-monitoring-targets.yml icinga2-monitoring-targets.conf $(ICINGA_LAB_DIR)/ 2>/dev/null || true
+	@cp -r configs/nginx-html configs/coredns configs/docker-compose-monitoring-targets.yml configs/icinga2-monitoring-targets.conf $(ICINGA_LAB_DIR)/ 2>/dev/null || true
 	@echo "Fixing paths in docker-compose.yml..."
 	@cd $(ICINGA_LAB_DIR)/docker-compose-icinga && \
 	git checkout docker-compose.yml && \
