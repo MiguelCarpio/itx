@@ -26,13 +26,18 @@ services:
     command: -conf /etc/coredns/Corefile
     restart: unless-stopped
 
-  # FTP/SFTP Server
-  sftp-server:
-    image: atmoz/sftp:latest
-    container_name: monitoring-sftp
+  # FTP Server
+  ftp-server:
+    image: stilliard/pure-ftpd:latest
+    container_name: monitoring-ftp
     ports:
-      - "2222:22"
-    command: testuser:testpass:1001
+      - "21:21"
+      - "30000-30009:30000-30009"  # Passive mode ports
+    environment:
+      PUBLICHOST: localhost
+      FTP_USER_NAME: testuser
+      FTP_USER_PASS: testpass
+      FTP_USER_HOME: /home/testuser
     restart: unless-stopped
 
   # Redis Cache
