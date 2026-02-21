@@ -38,7 +38,7 @@ check-icinga-clone:
 		cd $(ICINGA_LAB_DIR)/docker-compose-icinga && git pull; \
 	fi
 	@echo "Copying monitoring target configuration files..."
-	@cp -r configs/nginx-html configs/coredns configs/haproxy configs/docker-compose-monitoring-targets.yml $(ICINGA_LAB_DIR)/ 2>/dev/null || true
+	@cp -r configs/nginx-html configs/coredns configs/docker-compose-monitoring-targets.yml $(ICINGA_LAB_DIR)/ 2>/dev/null || true
 	@echo "Fixing paths in docker-compose.yml..."
 	@cd $(ICINGA_LAB_DIR)/docker-compose-icinga && \
 	git checkout docker-compose.yml && \
@@ -119,8 +119,6 @@ deploy-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "  FTP:            ftp-container:21           localhost:21 (testuser/testpass)"
 	@echo "  MariaDB:        mariadb-container:3306     localhost:3307 (root/mariapass)"
 	@echo "  MongoDB:        mongodb-container:27017    localhost:27017 (mongouser/mongopass)"
-	@echo "  HAProxy LB:     haproxy-container:80       http://localhost:8082"
-	@echo "  HAProxy Stats:  haproxy-container:8404     http://localhost:8404/stats (admin/haproxypass)"
 
 start-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Starting Icinga stack..."
@@ -159,7 +157,7 @@ logs-icinga-lab: check-docker-compose check-icinga-clone
 	@cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml logs -f
 
 clean-icinga-lab: check-docker-compose check-icinga-clone
-	@echo "WARNING: This will remove all containers, volumes, and the cloned repository of the user $$USER!"
+	@echo "WARNING: This will remove all Icinga Lab containers, volumes, and the cloned repository for user $$USER!"
 	@bash -c 'read -p "Are you sure? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \

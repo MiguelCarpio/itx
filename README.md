@@ -21,18 +21,24 @@ This command will:
 - Create the working directory at `/ITX_dir/$USER/icinga-lab`
 - Clone the docker-compose-icinga repository from https://github.com/lippserd/docker-compose-icinga.git
 - Deploy Icinga2 with IcingaWeb2
-- Deploy monitoring target services (Nginx, DNS, FTP, MariaDB, MongoDB, HAProxy)
+- Deploy monitoring target services (Nginx, DNS, FTP, MariaDB, MongoDB)
 
-### 3. Access Icinga Web Interface
+---
+
+## Deployed Services
+
+After successful deployment, the following services and tools are available:
+
+### Icinga Web Interface
 
 - **IcingaWeb2**: http://localhost:8080
 - **Icinga2 API**: https://localhost:5665
 - **Username**: `icingaadmin`
 - **Password**: `icinga`
 
-### 4. Monitoring Target Services
+### Monitoring Target Services
 
-After deployment, the following services are available for monitoring:
+The following services are deployed and available for monitoring:
 
 | Service | Internal (container) | External (host) |
 |---------|-------------------------|-----------------|
@@ -41,10 +47,10 @@ After deployment, the following services are available for monitoring:
 | FTP | ftp-container:21 | localhost:21 (testuser/testpass) |
 | MariaDB | mariadb-container:3306 | localhost:3307 (root/mariapass) |
 | MongoDB | mongodb-container:27017 | localhost:27017 (mongouser/mongopass) |
-| HAProxy LB | haproxy-container:80 | http://localhost:8082 |
-| HAProxy Stats | haproxy-container:8404 | http://localhost:8404/stats (admin/haproxypass) |
 
-### 5. Management Commands
+### Management Commands
+
+Use these commands to manage your Icinga lab environment:
 
 ```bash
 make start-icinga-lab    # Start all services
@@ -54,6 +60,8 @@ make status-icinga-lab   # Show container status
 make logs-icinga-lab     # Show logs
 make clean-icinga-lab    # Remove all containers and volumes
 ```
+
+---
 
 ## Monitor Hosts and Services
 
