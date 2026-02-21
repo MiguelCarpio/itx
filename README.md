@@ -35,14 +35,14 @@ This command will:
 After deployment, the following services are available for monitoring:
 
 | Service | Internal (container) | External (host) |
-|---------|---------------------|-----------------|
-| Nginx Web | monitoring-nginx:80 | http://localhost:8081 |
-| DNS Server | monitoring-dns:53 | localhost:15353 |
-| FTP Server | monitoring-ftp:21 | localhost:21 (testuser/testpass) |
-| MariaDB | monitoring-mariadb:3306 | localhost:3307 (root/mariapass) |
-| MongoDB | monitoring-mongodb:27017 | localhost:27017 (mongouser/mongopass) |
-| HAProxy LB | monitoring-haproxy:80 | http://localhost:8082 |
-| HAProxy Stats | monitoring-haproxy:8404 | http://localhost:8404/stats (admin/haproxypass) |
+|---------|-------------------------|-----------------|
+| Web | nginx-container:80 | http://localhost:8081 |
+| DNS | dns-container:53 | localhost:15353 |
+| FTP | ftp-container:21 | localhost:21 (testuser/testpass) |
+| MariaDB | mariadb-container:3306 | localhost:3307 (root/mariapass) |
+| MongoDB | mongodb-container:27017 | localhost:27017 (mongouser/mongopass) |
+| HAProxy LB | haproxy-container:80 | http://localhost:8082 |
+| HAProxy Stats | haproxy-container:8404 | http://localhost:8404/stats (admin/haproxypass) |
 
 ### 5. Management Commands
 

@@ -114,13 +114,13 @@ deploy-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Monitoring Target Services:"
 	@echo "  Service         Internal (container)       External (host)"
 	@echo "  --------------------------------------------------------------------"
-	@echo "  Nginx Web:      monitoring-nginx:80        http://localhost:8081"
-	@echo "  DNS Server:     monitoring-dns:53          localhost:15353"
-	@echo "  FTP Server:     monitoring-ftp:21          localhost:21 (testuser/testpass)"
-	@echo "  MariaDB:        monitoring-mariadb:3306    localhost:3307 (root/mariapass)"
-	@echo "  MongoDB:        monitoring-mongodb:27017   localhost:27017 (mongouser/mongopass)"
-	@echo "  HAProxy LB:     monitoring-haproxy:80      http://localhost:8082"
-	@echo "  HAProxy Stats:  monitoring-haproxy:8404    http://localhost:8404/stats (admin/haproxypass)"
+	@echo "  Web:            nginx-container:80         http://localhost:8081"
+	@echo "  DNS:            dns-container:53           localhost:15353"
+	@echo "  FTP:            ftp-container:21           localhost:21 (testuser/testpass)"
+	@echo "  MariaDB:        mariadb-container:3306     localhost:3307 (root/mariapass)"
+	@echo "  MongoDB:        mongodb-container:27017    localhost:27017 (mongouser/mongopass)"
+	@echo "  HAProxy LB:     haproxy-container:80       http://localhost:8082"
+	@echo "  HAProxy Stats:  haproxy-container:8404     http://localhost:8404/stats (admin/haproxypass)"
 
 start-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Starting Icinga stack..."
@@ -159,7 +159,7 @@ logs-icinga-lab: check-docker-compose check-icinga-clone
 	@cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml logs -f
 
 clean-icinga-lab: check-docker-compose check-icinga-clone
-	@echo "WARNING: This will remove all containers, volumes, and the cloned repository!"
+	@echo "WARNING: This will remove all containers, volumes, and the cloned repository of the user $$USER!"
 	@bash -c 'read -p "Are you sure? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
