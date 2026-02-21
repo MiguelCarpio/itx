@@ -165,7 +165,10 @@ Servicegroups organize services into logical groups for easier management and fi
 6. Click **Store**
 7. Repeat the same process to create `web-checks`, `ftp-checks` and `database-checks` servicegroups with their respective check command assignments
 
-### 7. Create Monitor Services
+> [!NOTE]
+> For `database-checks`, you'll need to create assignments for both `mysql` and `mysql_query` check commands since database monitoring involves multiple checks.
+
+### 7. Create Services
 
 1. Navigate to **Icinga Director** → **Services** → **Single Services**
 2. Click **Add** to create a new service
@@ -178,6 +181,9 @@ Servicegroups organize services into logical groups for easier management and fi
 5. Repeat for all other services (DNS, FTP, MariaDB) with their respective hosts, commands and custom properties
 6. Navigate to **Icinga Director** → **Activity log** and click **Deploy # pending changes**
 
+> [!NOTE]
+> For services using the `mysql_query` check command, set the `mysql_query_execute` custom field to a SQL query. Example: `SELECT 1`
+
 ---
 
 ## Manage Dashboards
@@ -186,7 +192,7 @@ Servicegroups organize services into logical groups for easier management and fi
 
 #### Create Critical Servers Dashlet
 
-1. Navigate to **IcingaWeb2** → **Problems** → **Service Grid**
+1. Navigate to **Problems** → **Service Grid**
 2. Uncheck **Problems Only**
 3. In **Type to search** field, write: `hostgroup.name=web-servers|hostgroup.name=database-servers`
 4. Click **Dropdown menu** → **Add to Dashboard**
@@ -197,7 +203,7 @@ Servicegroups organize services into logical groups for easier management and fi
 
 #### Create Supporting Servers Dashlet
 
-1. Navigate to **IcingaWeb2** → **Problems** → **Service Grid**
+1. Navigate to **Problems** → **Service Grid**
 2. Uncheck **Problems Only**
 3. In **Type to search** field, write: `hostgroup.name=network-servers`
 4. Click **Dropdown menu** → **Add to Dashboard**
