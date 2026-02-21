@@ -21,7 +21,7 @@ This command will:
 - Create the working directory at `/ITX_dir/$USER/icinga-lab`
 - Clone the docker-compose-icinga repository from https://github.com/lippserd/docker-compose-icinga.git
 - Deploy Icinga2 with IcingaWeb2
-- Deploy monitoring target services (Nginx, DNS, FTP, MariaDB, MailHog)
+- Deploy monitoring target services (Nginx, DNS, FTP, MariaDB, MongoDB)
 
 ### 3. Access Icinga Web Interface
 
@@ -40,8 +40,7 @@ After deployment, the following services are available for monitoring:
 | DNS Server | monitoring-dns:53 | localhost:15353 |
 | FTP Server | monitoring-ftp:21 | localhost:21 (testuser/testpass) |
 | MariaDB | monitoring-mariadb:3306 | localhost:3307 (root/mariapass) |
-| MailHog SMTP | monitoring-smtp:1025 | localhost:1025 |
-| MailHog Web | monitoring-smtp:8025 | http://localhost:8025 |
+| MongoDB | monitoring-mongodb:27017 | localhost:27017 (mongouser/mongopass) |
 
 ### 5. Management Commands
 

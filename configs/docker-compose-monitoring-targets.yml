@@ -40,15 +40,6 @@ services:
       FTP_USER_HOME: /home/testuser
     restart: unless-stopped
 
-  # SMTP Server (for testing)
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: monitoring-smtp
-    ports:
-      - "1025:1025"  # SMTP
-      - "8025:8025"  # Web UI
-    restart: unless-stopped
-
   # MariaDB Database
   mariadb:
     image: mariadb:latest
@@ -69,8 +60,28 @@ services:
       retries: 3
     restart: unless-stopped
 
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: monitoring-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongouser
+      MONGO_INITDB_ROOT_PASSWORD: mongopass
+      MONGO_INITDB_DATABASE: testdb
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
 volumes:
   mariadb-data:
+  mongodb-data:
 
 networks:
   default:

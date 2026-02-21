@@ -118,8 +118,7 @@ deploy-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "  DNS Server:     monitoring-dns:53          localhost:15353"
 	@echo "  FTP Server:     monitoring-ftp:21          localhost:21 (testuser/testpass)"
 	@echo "  MariaDB:        monitoring-mariadb:3306    localhost:3307 (root/mariapass)"
-	@echo "  MailHog SMTP:   monitoring-smtp:1025       localhost:1025"
-	@echo "  MailHog Web:    monitoring-smtp:8025       http://localhost:8025"
+	@echo "  MongoDB:        monitoring-mongodb:27017   localhost:27017 (mongouser/mongopass)"
 
 start-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Starting Icinga stack..."
