@@ -46,25 +46,8 @@ services:
       retries: 3
     restart: unless-stopped
 
-  # MongoDB Database
-  mongodb-container:
-    image: mongo:latest
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongouser
-      MONGO_INITDB_ROOT_PASSWORD: mongopass
-      MONGO_INITDB_DATABASE: testdb
-    volumes:
-      - mongodb-data:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
-
 volumes:
   mariadb-data:
-  mongodb-data:
 
 networks:
   default:

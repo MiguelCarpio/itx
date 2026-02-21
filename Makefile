@@ -118,7 +118,6 @@ deploy-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "  DNS:            dns-container:53           -"
 	@echo "  FTP:            ftp-container:21           testuser/testpass"
 	@echo "  MariaDB:        mariadb-container:3306     root/mariapass"
-	@echo "  MongoDB:        mongodb-container:27017    mongouser/mongopass"
 
 start-icinga-lab: check-docker-compose check-icinga-clone
 	@echo "Starting Icinga stack..."

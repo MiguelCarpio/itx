@@ -21,7 +21,7 @@ This command will:
 - Create the working directory at `/ITX_dir/$USER/icinga-lab`
 - Clone the docker-compose-icinga repository from https://github.com/lippserd/docker-compose-icinga.git
 - Deploy Icinga2 with IcingaWeb2
-- Deploy monitoring target services (Nginx, DNS, FTP, MariaDB, MongoDB)
+- Deploy monitoring target services (Nginx, DNS, FTP, MariaDB)
 
 ---
 
@@ -46,7 +46,6 @@ The following services are deployed and available for monitoring (internal netwo
 | DNS | dns-container:53 | - |
 | FTP | ftp-container:21 | testuser/testpass |
 | MariaDB | mariadb-container:3306 | root/mariapass |
-| MongoDB | mongodb-container:27017 | mongouser/mongopass |
 
 ### Management Commands
 
@@ -67,6 +66,16 @@ make clean-icinga-lab    # Remove all containers and volumes
 
 > **NOTE:** After any change in Icinga Director, you must deploy the configuration. Navigate to **Icinga Director** → **Activity log** and click **Deploy # pending changes** to apply your modifications.
 
+### Monitoring Targets Overview
+
+| Display Name | Host Address | Hostgroup | Services | Servicegroup | Check Command | Custom Fields |
+|--------------|--------------|-----------|----------|--------------|---------------|---------------|
+| $USER-nginx | nginx-container | web-servers | http | web-checks | http | - |
+| $USER-dns | dns-container | network-servers | dns | dns-checks | dns | - |
+| $USER-ftp | ftp-container | network-servers | ftp | ftp-checks | ftp | - |
+| $USER-mariadb | mariadb-container | database-servers | mysql | database-checks | mysql | mysql_username, mysql_password |
+| $USER-mariadb | mariadb-container | database-servers | mysql_query | database-checks | mysql_query | mysql_query_username, mysql_query_password, mysql_query_execute |
+
 ### 1. Create a Host Template
 
 Host templates define default monitoring behavior for hosts.
@@ -81,7 +90,7 @@ Host templates define default monitoring behavior for hosts.
    - **Max check attempts**: `3`
 4. Click **Add** to save
 
-### 2. Create a Hostgroup
+### 2. Create Hostgroups
 
 Hostgroups organize hosts into logical groups for easier management and filtering.
 
@@ -91,125 +100,101 @@ Hostgroups organize hosts into logical groups for easier management and filterin
    - **Hostgroup name**: e.g., `web-servers`
    - **Display name**: e.g., `Web Servers`
 4. Click **Add** to save
+5. Repeat the same process to create `database-servers` and `network-servers` hostgroups
 
-### 3. Create a Host
+### 3. Create Hosts
 
-1. Navigate to **Icinga Director** → **Hosts**
+1. Navigate to **Icinga Director** → **Hosts** → **Hosts**
 2. Click **Add** to create a new host
 3. Configure the host:
    - **Host Template**: Select `$USER-servers`
-   - **Display name**: `$USER-nginx`
-   - **Host name**: e.g., `$USER-nginx`
-   - **Host Address**: `monitoring-nginx` (or IP address)
+   - **Host name**: `$SERVICE-container` (e.g., `nginx-container`)
+   - **Display name**: `$USER-$SERVICE` (e.g., `$USER-nginx`)
+   - **Host Address**: `$SERVICE-container` (e.g., `nginx-container`)
    - **Groups**: Select the hostgroup (e.g., `web-servers`)
 4. Click **Add** to save
-5. Navigate to **Icinga Director** → **Activity log** and click **Deploy # pending changes**
+5. Repeat the same process for `dns-container`, `ftp-container`, and `mariadb-container`
+6. Navigate to **Icinga Director** → **Activity log** and click **Deploy # pending changes**
 
-### 3. Create a Custom Port Variable in Commands
+### 4. Add Custom Fields to Commands
 
-To monitor services on custom ports (e.g., HTTP on port 80):
+Commands may require custom fields for credentials, ports, or other parameters.
 
 1. Navigate to **Icinga Director** → **Commands** → **External Commands**
-2. Find and edit the `http` command
-3. Add custom fields:
-   - Click **Fields** tab
-   - Add field: `$http_port$`
-     - **Field name**: `$http_port$`
-     - **Caption**: `http_port`
-4. Click **Add** to save
+2. Find and edit the `mysql` command
+3. Click **Fields** tab
+4. Add the following custom fields:
+   - Field name: `mysql_username`
+   - Field name: `mysql_password`
+5. Click **Add**
+6. Do the same for `mysql_query` command, adding:
+   - Field name: `mysql_query_username`
+   - Field name: `mysql_query_password`
+   - Field name: `mysql_query_execute`
 
-### 4. Create a Service Template
+### 5. Create a Service Template
 
 Service templates define default monitoring behavior for services.
 
 1. Navigate to **Icinga Director** → **Services** → **Service Templates**
 2. Click **Add** to create a new service template
 3. Configure the template:
-   - **Name**: `web-services`
+   - **Name**: `$USER-services`
    - **Check interval**: `5m`
    - **Retry interval**: `1m`
    - **Max check attempts**: `3`
 4. Click **Add** to save
 
-### 5. Create a Servicegroup
+### 6. Create Servicegroups
 
 Servicegroups organize services into logical groups for easier management and filtering.
 
 1. Navigate to **Icinga Director** → **Services** → **Service Groups**
 2. Click **Add** to create a new servicegroup
 3. Configure the servicegroup:
-   - **Servicegroup name**: e.g., `web-services`, `database-services`, or `network-services`
-   - **Display name**: e.g., `Web Services`
+   - **Servicegroup name**: e.g., `dns-checks`
+   - **Display name**: e.g., `DNS Checks`
 4. Click **Add** to save
-5. Click **Store**
+5. Assign services automatically: `service.check_command = dns`
+6. Click **Store**
+7. Repeat the same process to create `web-checks`, `ftp-checks` and `database-checks` servicegroups with their respective check command assignments
 
-### 7. Create a Monitor Service to the Host
+### 7. Create Monitor Services
 
 1. Navigate to **Icinga Director** → **Services** → **Single Services**
 2. Click **Add** to create a new service
 3. Configure the service:
-   - **Name**: e.g., `Nginx`
-   - **Imports**: Select `web-services`
-   - **Host**: Select the host created earlier (e.g., `$USER-nginx`)
+   - **Name**: e.g., `http`
+   - **Imports**: Select `$USER-services`
+   - **Host**: Select the host created earlier (e.g., `nginx-container`)
    - **Check command**: Select `http`
-   - **Groups**: Select the servicegroup (e.g., `web-services`)
-   - **Check command**: `http`
-   - **Custom properties** (if using custom port):
-     - `http_port`: `80`
 4. Click **Add** to save
-5. Navigate to **Icinga Director** → **Activity log** and click **Deploy # pending changes**
+5. Repeat for all other services (DNS, FTP, MariaDB) with their respective hosts, commands and custom properties
+6. Navigate to **Icinga Director** → **Activity log** and click **Deploy # pending changes**
 
-### 8. Create a Grid
+---
 
-Grids (Dashboards) provide visual monitoring overview with filtering options using hostgroups and servicegroups.
+## Manage Dashboards
 
-1. Navigate to **Icinga Director** → **Dashboards** or **IcingaWeb2** → **Dashboards**
-2. Click **Add Dashboard** or **Create New**
-3. Configure the dashboard:
-   - **Dashboard name**: e.g., `Monitoring Overview`
-4. Add Dashlets (widgets):
-   - Click **Add Dashlet**
-   - Choose dashlet type:
-     - **Service Grid**: Shows services by host
-     - **Host Problems**: Shows problematic hosts
-     - **Service Problems**: Shows problematic services
-     - **Tactical Overview**: Shows overall system status
-5. Configure each dashlet:
-   - Set filters using hostgroups/servicegroups:
-     - **By Hostgroup**: e.g., `hostgroup=monitoring-targets`
-     - **By Servicegroup**: e.g., `servicegroup=web-services`
-     - **By Service State**: e.g., `service.state!=0` (show only problems)
-     - **By Host State**: e.g., `host.state!=0` (show only down hosts)
-   - Set refresh intervals
-6. Arrange dashlets by dragging and dropping
-7. Click **Save** to save the dashboard
+### Create a Dashboard
 
-#### Example Grid Configurations
+#### Create Critical Servers Dashlet
 
-**Service Grid Dashlet (Filtered by Hostgroup)**:
-- **Title**: `Monitoring Target Services`
-- **Columns**: Host, Service, Status, Last Check, Duration
-- **Filter**: `hostgroup=monitoring-targets`
-- **Refresh interval**: `30s`
+1. Navigate to **IcingaWeb2** → **Problems** → **Service Grid**
+2. Uncheck **Problems Only**
+3. In **Type to search** field, write: `hostgroup.name=web-servers|hostgroup.name=database-servers`
+4. Click **Dropdown menu** → **Add to Dashboard**
+5. Set **Dashlet Title**: `Critical Servers`
+6. Click **New dashboard**
+7. Set **New Dashboard Title**: `Monitoring ITX`
+8. Click **Add to Dashboard**
 
-**Service Grid Dashlet (Filtered by Servicegroup)**:
-- **Title**: `Web Services`
-- **Columns**: Host, Service, Status, Last Check, Duration
-- **Filter**: `servicegroup=web-services`
-- **Refresh interval**: `30s`
+#### Create Supporting Servers Dashlet
 
-**Host Problems Dashlet (Filtered by Hostgroup)**:
-- **Title**: `Monitoring Targets - Problems`
-- **Filter**: `hostgroup=monitoring-targets&host.state!=0`
-- **Refresh interval**: `30s`
-
-**Service Problems Dashlet (Filtered by Servicegroup)**:
-- **Title**: `Web Services - Problems`
-- **Filter**: `servicegroup=web-services&service.state!=0`
-- **Refresh interval**: `30s`
-
-**Tactical Overview Dashlet**:
-- **Title**: `System Overview`
-- **Shows**: Total hosts/services, UP/DOWN counts, problem statistics
-- **Filter**: None (all) or specific `hostgroup=monitoring-targets`
-- **Refresh interval**: `30s`
+1. Navigate to **IcingaWeb2** → **Problems** → **Service Grid**
+2. Uncheck **Problems Only**
+3. In **Type to search** field, write: `hostgroup.name=network-servers`
+4. Click **Dropdown menu** → **Add to Dashboard**
+5. Set **Dashlet Title**: `Supporting Servers`
+6. Select the **Monitoring ITX** dashboard (don't create a new one)
+7. Click **Add to Dashboard**
