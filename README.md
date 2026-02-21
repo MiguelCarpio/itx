@@ -38,15 +38,15 @@ After successful deployment, the following services and tools are available:
 
 ### Monitoring Target Services
 
-The following services are deployed and available for monitoring:
+The following services are deployed and available for monitoring (internal network access only):
 
-| Service | Internal (container) | External (host) |
-|---------|-------------------------|-----------------|
-| Web | nginx-container:80 | http://localhost:8081 |
-| DNS | dns-container:53 | localhost:15353 |
-| FTP | ftp-container:21 | localhost:21 (testuser/testpass) |
-| MariaDB | mariadb-container:3306 | localhost:3307 (root/mariapass) |
-| MongoDB | mongodb-container:27017 | localhost:27017 (mongouser/mongopass) |
+| Service | Container:Port | Credentials |
+|---------|----------------|-------------|
+| Web | nginx-container:80 | - |
+| DNS | dns-container:53 | - |
+| FTP | ftp-container:21 | testuser/testpass |
+| MariaDB | mariadb-container:3306 | root/mariapass |
+| MongoDB | mongodb-container:27017 | mongouser/mongopass |
 
 ### Management Commands
 

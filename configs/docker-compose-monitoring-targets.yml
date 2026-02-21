@@ -2,8 +2,6 @@ services:
   # HTTP/HTTPS Web Servers
   nginx-container:
     image: nginx:alpine
-    ports:
-      - "8081:80"
     volumes:
       - ./nginx-html:/usr/share/nginx/html:ro
     healthcheck:
@@ -16,9 +14,6 @@ services:
   # DNS Server
   dns-container:
     image: coredns/coredns:latest
-    ports:
-      - "15353:53/udp"
-      - "15353:53/tcp"
     volumes:
       - ./coredns:/etc/coredns:ro
     command: -conf /etc/coredns/Corefile
@@ -27,9 +22,6 @@ services:
   # FTP Server
   ftp-container:
     image: stilliard/pure-ftpd:latest
-    ports:
-      - "21:21"
-      - "30000-30009:30000-30009"  # Passive mode ports
     environment:
       PUBLICHOST: localhost
       FTP_USER_NAME: testuser
@@ -40,8 +32,6 @@ services:
   # MariaDB Database
   mariadb-container:
     image: mariadb:latest
-    ports:
-      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: mariapass
       MYSQL_DATABASE: testdb
@@ -59,8 +49,6 @@ services:
   # MongoDB Database
   mongodb-container:
     image: mongo:latest
-    ports:
-      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongouser
       MONGO_INITDB_ROOT_PASSWORD: mongopass
