@@ -40,20 +40,6 @@ services:
       FTP_USER_HOME: /home/testuser
     restart: unless-stopped
 
-  # Redis Cache
-  redis-cache:
-    image: redis:alpine
-    container_name: monitoring-redis
-    ports:
-      - "6379:6379"
-    command: redis-server --appendonly yes
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
-
   # SMTP Server (for testing)
   mailhog:
     image: mailhog/mailhog:latest
