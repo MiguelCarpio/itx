@@ -79,6 +79,25 @@ services:
       retries: 3
     restart: unless-stopped
 
+  # HAProxy Load Balancer
+  haproxy:
+    image: haproxy:latest
+    container_name: monitoring-haproxy
+    ports:
+      - "8082:80"       # HAProxy frontend
+      - "8404:8404"     # Stats page
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy:ro
+    command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8404/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    depends_on:
+      - nginx-web
+
 volumes:
   mariadb-data:
   mongodb-data:
