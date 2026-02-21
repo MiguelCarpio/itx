@@ -3,7 +3,7 @@
 .DEFAULT_GOAL := help
 
 # Working directory
-ICINGA_LAB_DIR := /ITX_dir/$(shell echo $$USER)/icinga-lab
+ICINGA_LAB_DIR ?= /ITX_dir/$(shell echo $$USER)/icinga-lab
 
 # Detect docker-compose command
 DOCKER_COMPOSE := $(shell command -v docker-compose 2> /dev/null)
@@ -156,7 +156,19 @@ logs-icinga-lab: check-docker-compose check-icinga-clone
 	@cd $(ICINGA_LAB_DIR) && $(DOCKER_COMPOSE) -p icinga-$$USER -f docker-compose-monitoring-targets.yml logs -f
 
 clean-icinga-lab: check-docker-compose check-icinga-clone
-	@echo "WARNING: This will remove all Icinga Lab containers, volumes, and the cloned repository for user $$USER!"
+	@echo ""
+	@echo "========================================================================"
+	@echo "                              ⚠️  WARNING  ⚠️"
+	@echo "========================================================================"
+	@echo ""
+	@echo "  This will permanently delete for user $$USER:"
+	@echo "    • All Icinga Lab containers (project: icinga-$$USER)"
+	@echo "    • All associated volumes and data"
+	@echo "    • The entire working directory and its contents"
+	@echo ""
+	@echo "  Directory to be removed: $(ICINGA_LAB_DIR)"
+	@echo ""
+	@echo "========================================================================"
 	@bash -c 'read -p "Are you sure? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \

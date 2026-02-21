@@ -23,6 +23,12 @@ This command will:
 - Deploy Icinga2 with IcingaWeb2
 - Deploy monitoring target services (Nginx, DNS, FTP, MariaDB)
 
+> [!IMPORTANT]
+> If you are deploying the icinga-lab on your personal machine, you may need to set a custom directory path. Use the `ICINGA_LAB_DIR` variable:
+> ```bash
+> ICINGA_LAB_DIR=~/icinga-lab make deploy-icinga-lab
+> ```
+
 ---
 
 ## Deployed Services
