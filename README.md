@@ -213,3 +213,15 @@ Servicegroups organize services into logical groups for easier management and fi
 5. Set **Dashlet Title**: `Supporting Servers`
 6. Select the **Monitoring ITX** dashboard (don't create a new one)
 7. Click **Add to Dashboard**
+
+---
+
+## Important Reminders
+
+> [!WARNING]
+> **Don't forget to stop your project when you finish your lab!**
+>
+> Running containers consume system resources. Always stop your Icinga lab when not in use:
+> ```bash
+> make stop-icinga-lab
+> ```
