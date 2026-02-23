@@ -13,6 +13,9 @@ git switch icinga2
 
 ### 2. Deploy Icinga Lab Environment
 
+> [!IMPORTANT]
+> Before deploying or starting the icinga lab, stop any other running icinga lab projects with `make stop-all-compose`
+
 ```bash
 make deploy-icinga-lab
 ```
@@ -23,7 +26,7 @@ This command will:
 - Deploy Icinga2 with IcingaWeb2
 - Deploy monitoring target services (Nginx, DNS, FTP, MariaDB)
 
-> [!IMPORTANT]
+> [!TIP]
 > If you are deploying the icinga-lab on your personal machine, you may need to set a custom directory path. Use the `ICINGA_LAB_DIR` variable:
 > ```bash
 > ICINGA_LAB_DIR=~/icinga-lab make deploy-icinga-lab
