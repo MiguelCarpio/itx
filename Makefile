@@ -2,6 +2,9 @@
 
 .DEFAULT_GOAL := help
 
+# Working directories
+PROMETHEUS_GRAFANA_LAB_DIR ?= /ITX_dir/$(shell echo $$USER)/prometheus-grafana-lab
+
 # Detect docker-compose command
 DOCKER_COMPOSE := $(shell command -v docker-compose 2> /dev/null)
 ifndef DOCKER_COMPOSE
@@ -35,18 +38,20 @@ check-docker-compose:
 	fi
 
 check-prometheus-grafana-clone:
-	@if [ ! -d "prometheus-alertmanager-tutorial" ]; then \
+	@echo "Creating working directory $(PROMETHEUS_GRAFANA_LAB_DIR)..."
+	@mkdir -p $(PROMETHEUS_GRAFANA_LAB_DIR)
+	@if [ ! -d "$(PROMETHEUS_GRAFANA_LAB_DIR)/prometheus-alertmanager-tutorial" ]; then \
 		echo "Cloning repository..."; \
-		git clone $(REPO_URL); \
+		cd $(PROMETHEUS_GRAFANA_LAB_DIR) && git clone $(REPO_URL); \
 	else \
 		echo "Repository already exists. Pulling latest changes..."; \
-		cd prometheus-alertmanager-tutorial && git pull; \
+		cd $(PROMETHEUS_GRAFANA_LAB_DIR)/prometheus-alertmanager-tutorial && git pull; \
 	fi
 
 deploy-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 	@echo "Deploying Prometheus-Grafana-Alertmanager stack..."
 	@echo "Starting the stack..."
-	@cd prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER up -d
+	@cd $(PROMETHEUS_GRAFANA_LAB_DIR)/prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER up -d
 	@echo ""
 	@echo "Prometheus-Grafana-Alertmanager stack deployed successfully!"
 	@echo ""
@@ -58,29 +63,29 @@ deploy-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 
 start-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 	@echo "Starting Prometheus-Grafana stack..."
-	@cd prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER start
+	@cd $(PROMETHEUS_GRAFANA_LAB_DIR)/prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER start
 	@echo "Stack started successfully!"
 
 stop-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 	@echo "Stopping Prometheus-Grafana stack..."
-	@cd prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER stop
+	@cd $(PROMETHEUS_GRAFANA_LAB_DIR)/prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER stop
 	@echo "Stack stopped successfully!"
 
 restart-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 	@echo "Restarting Prometheus-Grafana stack..."
-	@cd prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER restart
+	@cd $(PROMETHEUS_GRAFANA_LAB_DIR)/prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER restart
 	@echo "Stack restarted successfully!"
 
 logs-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 	@echo "Showing logs from Prometheus-Grafana containers..."
-	@cd prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER logs -f
+	@cd $(PROMETHEUS_GRAFANA_LAB_DIR)/prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER logs -f
 
 status-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 	@echo "Status of Prometheus-Grafana containers:"
-	@cd prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER ps
+	@cd $(PROMETHEUS_GRAFANA_LAB_DIR)/prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER ps
 
 clean-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 	@echo "Stopping and removing Prometheus-Grafana containers and volumes..."
-	@cd prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER down -v
+	@cd $(PROMETHEUS_GRAFANA_LAB_DIR)/prometheus-alertmanager-tutorial && $(DOCKER_COMPOSE) -p prometheus-grafana-$$USER down -v
 	@echo "Stack cleaned successfully!"
-	@echo "To remove the project directory, run: rm -rf prometheus-alertmanager-tutorial"
+	@echo "To remove the project directory, run: rm -rf $(PROMETHEUS_GRAFANA_LAB_DIR)"
