@@ -28,8 +28,7 @@ help:
 	@echo "                                   Services available at:"
 	@echo "                                     • Prometheus:   http://localhost:9090"
 	@echo "                                     • Grafana:      http://localhost:3000"
-	@echo "                                     • Alertmanager: http://localhost:9093"
-	@echo "                                     • Demo App:     http://localhost:8090"
+	@echo "                                     • Ping App:     http://localhost:8090/ping"
 	@echo ""
 	@echo "  make start-prometheus-grafana    Start existing containers"
 	@echo "  make stop-prometheus-grafana     Stop running containers"
@@ -84,8 +83,7 @@ deploy-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 	@echo "Access the services at:"
 	@echo "  - Prometheus:    http://localhost:9090"
 	@echo "  - Grafana:       http://localhost:3000"
-	@echo "  - Alertmanager:  http://localhost:9093"
-	@echo "  - Demo App:      http://localhost:8090"
+	@echo "  - Ping App:      http://localhost:8090/ping"
 
 start-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 	@echo "Starting Prometheus-Grafana stack..."
