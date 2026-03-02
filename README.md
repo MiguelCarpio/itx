@@ -8,7 +8,7 @@ This project includes a Makefile with several useful Docker and Docker Compose m
 ### Available Commands
 
 - **`make help`** - Display all available Makefile targets with descriptions
-- **`make list-compose`** - List all running Docker Compose projects on your system
+- **`make list-compose`** - List all Docker Compose projects (running and stopped) on your system
 - **`make stop-all-compose`** - Stop all Docker Compose projects (requires `jq` to be installed)
 - **`make install-docker`** - Install Docker and Docker Compose on your system
 

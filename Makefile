@@ -17,7 +17,7 @@ help:
 	@echo "=================="
 	@echo ""
 	@echo "  make help              - Show this help message"
-	@echo "  make list-compose      - List all Docker Compose projects"
+	@echo "  make list-compose      - List all Docker Compose projects (running and stopped)"
 	@echo "  make stop-all-compose  - Stop all Docker Compose projects"
 	@echo "  make install-docker    - Install Docker and Docker Compose"
 	@echo ""
@@ -38,7 +38,7 @@ check-docker-compose:
 list-compose: check-docker-compose
 	@echo "Docker Compose Projects:"
 	@echo "========================"
-	@$(DOCKER_COMPOSE) ls
+	@$(DOCKER_COMPOSE) ls --all
 
 # Stop all Docker Compose projects
 stop-all-compose: check-docker-compose
