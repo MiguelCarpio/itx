@@ -251,3 +251,39 @@ node_memory_MemAvailable_bytes / 1024 / 1024 / 1024
 **Meaning:** The system currently has **2.0 GB** of memory available
 
 **Check the Graph tab:** You'll see a line graph showing how available memory changes over time - decreasing when applications use more memory and increasing when memory is freed.
+
+## Visualizing Metrics using Grafana
+
+We will check a simple dashboard using Grafana to visualize the `ping_request_count` metric from the Ping Demo App target.
+
+### Ping Demo App
+
+**Testing the Alert**
+
+1. Open http://localhost:9090/rules in your browser to see the configured rules
+
+2. Run the instrumented ping server and visit the http://localhost:8090/ping endpoint
+
+3. Refresh the page **at least 6 times**
+
+4. Check the ping count by navigating to the http://localhost:8090/metrics endpoint
+
+5. To see the status of the alert, visit http://localhost:9090/alerts
+
+Once the condition `ping_request_count > 5` is true for more than 10 seconds, the alert state will become **FIRING**.
+
+### Prometheus as a Data Source in Grafana
+
+Once Grafana is installed and running, navigate to http://localhost:3000 in your browser.
+
+1. Check Connections → Data Sources → Prometheus
+
+   In the Data Sources screen (Connections → Add new connection), you can see that Grafana supports multiple data sources like Graphite, PostgreSQL, etc.
+
+2. Alerting → Alert Rules → /etc/prometheus/rules.yml
+
+   You should see the alert rule: **Count greater than 5**
+
+3. Dashboards → ping_request_count
+
+   View the dashboard displaying the `ping_request_count` metric visualization.
