@@ -184,3 +184,70 @@ increase(node_cpu_seconds_total{cpu="0",mode="user"}[1h])
 **Meaning:** CPU core 0 spent **450 seconds (7.5 minutes)** running user processes in the last hour
 
 **Check the Graph tab:** You'll see a line graph showing the total increase over a sliding 1-hour window. Each point shows how much CPU time was consumed in the hour leading up to that moment.
+
+### Gauge
+
+A **Gauge** is a metric value that can go up and down. Unlike counters that only increase, gauges represent a current state or measurement at a specific point in time. Gauges are ideal for tracking metrics like:
+- Current memory usage
+- Number of active connections
+- Temperature readings
+- CPU load average
+- Queue size
+
+**Key Characteristics:**
+
+**Current value** - Gauges represent the current state, not cumulative totals. You can query them directly without needing rate() or increase() functions.
+
+**Can decrease** - Unlike counters, gauge values can both increase and decrease naturally.
+
+**Example Gauge Metrics**
+
+**Monitoring current goroutines**
+
+First, click on **Graph** tab, type the metric `go_goroutines` in the Expression bar and click on Execute.
+
+```
+# TYPE go_goroutines gauge
+go_goroutines 42
+```
+
+**What it tracks:** The current number of goroutines (concurrent execution threads) running in the Prometheus process
+
+**Query Example:**
+
+Type the below query in the query bar and click on Execute:
+
+```promql
+go_goroutines
+```
+
+**Example return value:** `42` *(this value changes based on Prometheus workload)*
+
+**Meaning:** The Prometheus server currently has **42 goroutines** running
+
+**Check the Graph tab:** You'll see a line graph showing how the number of goroutines fluctuates over time - increasing when Prometheus is busier and decreasing when idle.
+
+**Monitoring available memory**
+
+Type the metric `node_memory_MemAvailable_bytes` in the Expression bar and click on Execute.
+
+```
+# TYPE node_memory_MemAvailable_bytes gauge
+node_memory_MemAvailable_bytes 2147483648
+```
+
+**What it tracks:** The amount of memory (in bytes) currently available for use on the system
+
+**Query Example:**
+
+Type the below query in the query bar and click on Execute:
+
+```promql
+node_memory_MemAvailable_bytes / 1024 / 1024 / 1024
+```
+
+**Example return value:** `2.0` *(this value changes based on system memory usage)*
+
+**Meaning:** The system currently has **2.0 GB** of memory available
+
+**Check the Graph tab:** You'll see a line graph showing how available memory changes over time - decreasing when applications use more memory and increasing when memory is freed.
