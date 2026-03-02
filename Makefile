@@ -40,7 +40,7 @@ help:
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 	@echo "Docker Compose Utilities"
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-	@echo "  make list-compose                List all Docker Compose projects"
+	@echo "  make list-compose                List all Docker Compose projects (running and stopped)"
 	@echo "  make stop-all-compose            Stop all Docker Compose projects"
 	@echo ""
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -117,7 +117,7 @@ clean-prometheus-grafana: check-docker-compose check-prometheus-grafana-clone
 list-compose: check-docker-compose
 	@echo "Docker Compose Projects:"
 	@echo "========================"
-	@$(DOCKER_COMPOSE) ls
+	@$(DOCKER_COMPOSE) ls --all
 
 # Stop all Docker Compose projects
 stop-all-compose: check-docker-compose
