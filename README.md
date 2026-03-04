@@ -287,3 +287,13 @@ Once Grafana is installed and running, navigate to http://localhost:3000 in your
 3. Dashboards → ping_request_count
 
    View the dashboard displaying the `ping_request_count` metric visualization.
+
+## Important Reminders
+
+> [!WARNING]
+> **Don't forget to stop your project when you finish your lab!**
+>
+> Running containers consume system resources. Always stop your Prometheus Grafana lab when not in use:
+> ```bash
+> make stop-prometheus-grafana
+> ```
