@@ -52,6 +52,17 @@ gns3: run-gns3
 
 clean-gns3:
 	@echo "Cleaning GNS3 installation..."
+	@echo ""
+	@echo "WARNING: This will permanently delete the following:"
+	@echo "  - Virtual environment: ~/GNS3"
+	@echo "  - Configuration files: ~/.config/GNS3"
+	@echo "  - Data directory: $(GNS3_DATA_DIR)"
+	@echo ""
+	@read -p "Are you sure you want to proceed? (yes/no): " confirm && \
+	if [ "$$confirm" != "yes" ]; then \
+		echo "Cleanup cancelled."; \
+		exit 1; \
+	fi
 	@echo "Removing virtual environment..."
 	@rm -rf ~/GNS3
 	@echo "Removing configuration files..."
