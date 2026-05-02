@@ -232,9 +232,15 @@ def main():
         total_score += sum(t['score'] for t in device_tests)
         max_score += len(device_tests)
 
+    # Scale score to 10 points
+    if max_score > 0:
+        scaled_score = round((total_score / max_score) * 10, 2)
+    else:
+        scaled_score = 0
+
     # Create results.json
     results = {
-        "score": total_score,
+        "score": scaled_score,
         "execution_time": 1,
         "output": f"Checked {len(all_tests)} configuration items across {len(expected_configs)} devices",
         "tests": all_tests,

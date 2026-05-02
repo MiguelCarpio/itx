@@ -38,18 +38,19 @@ The `test_autograder.py` script:
 ```
 AUTOGRADER RESULTS
 ============================================================
-Score: 19.0 / 20.0
-Output: Checked 20 configuration items across 3 devices
+Score: 9.61 / 10
+Output: Checked 128 configuration items across 13 devices
 
 INDIVIDUAL TESTS:
 ------------------------------------------------------------
 
-[HQ1]
+[HQ-1]
   ✓ System Identity
   ✓ Loopback Bridge
-  ✗ IP Address Configuration
-    → Expected at least 3 IP addresses on ether interfaces, found 2
-  ✓ OSPF Router ID Configured
+  ✓ IP Address ether1
+  ✗ IP Address ether2
+    → Missing or incorrect: IP address on ether2 with /30 mask
+  ✓ OSPF Router ID
   ...
 ```
 
@@ -76,13 +77,16 @@ cat test_results.txt | tail -n +3 | jq .
 ```bash
 # Ensure you have valid sample configs
 ls test_submission/
-# Should show: HQ1-config.txt  HQ2-config.txt  HQ3-config.txt
+# Should show: HQ-1-config.txt  HQ-2-config.txt  HQ-3-config.txt
+#              CE-1-config.txt  PE-1-config.txt  P-1-config.txt
+#              P-2-config.txt   PE-2-config.txt  CE-2-config.txt
+#              SD-1-config.txt  SD-2-config.txt  SA-1-config.txt  SA-2-config.txt
 
 # Run test
 python3 test_autograder.py
 ```
 
-✅ **All tests should pass (20/20)**
+✅ **All tests should pass (10.0 / 10)**
 
 ### 2. Test Edge Cases
 
@@ -150,7 +154,7 @@ Create your own test cases:
 mkdir custom_test
 
 # Add config files
-cat > custom_test/HQ1-config.txt << 'EOF'
+cat > custom_test/HQ-1-config.txt << 'EOF'
 # Your test configuration here
 EOF
 

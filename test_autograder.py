@@ -35,8 +35,11 @@ def setup_environment():
         os.path.join(SOURCE_DIR, "expected_configs.json")
     )
 
-    # Copy test submission files
-    for filename in ["HQ1-config.txt", "HQ2-config.txt", "HQ3-config.txt"]:
+    # Copy test submission files (HQ, MPLS, and Switch configs)
+    for filename in ["HQ-1-config.txt", "HQ-2-config.txt", "HQ-3-config.txt",
+                     "CE-1-config.txt", "PE-1-config.txt", "P-1-config.txt",
+                     "P-2-config.txt", "PE-2-config.txt", "CE-2-config.txt",
+                     "SD-1-config.txt", "SD-2-config.txt", "SA-1-config.txt", "SA-2-config.txt"]:
         src = os.path.join(project_root, "test_submission", filename)
         dst = os.path.join(SUBMISSION_DIR, filename)
         if os.path.exists(src):
@@ -99,7 +102,7 @@ def display_results():
 
     print("AUTOGRADER RESULTS")
     print("=" * 60)
-    print(f"Score: {results['score']} / {sum(t['max_score'] for t in results['tests'])}")
+    print(f"Score: {results['score']} / 10")
     print(f"Output: {results['output']}")
     print()
 
