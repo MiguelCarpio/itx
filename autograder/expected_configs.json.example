@@ -1,0 +1,131 @@
+{
+  "HQ1": {
+    "requirements": [
+      {
+        "name": "System Identity",
+        "type": "exact",
+        "command": "system identity set name=HQ1"
+      },
+      {
+        "name": "Loopback Bridge",
+        "type": "exact",
+        "command": "interface bridge add name=lo1 protocol-mode=none"
+      },
+      {
+        "name": "IP Address Configuration",
+        "type": "ip_addresses",
+        "require_lo1_32": true,
+        "min_ether_addresses": 3,
+        "expected_subnet_masks": [30, 28]
+      },
+      {
+        "name": "OSPF Router ID Configured",
+        "type": "pattern",
+        "pattern": "routing\\s+ospf\\s+instance\\s+set\\s+.*router-id=",
+        "description": "OSPF router-id configured"
+      },
+      {
+        "name": "OSPF Networks Configured",
+        "type": "pattern",
+        "pattern": "routing\\s+ospf\\s+network\\s+add\\s+network=",
+        "description": "At least one OSPF network configured"
+      },
+      {
+        "name": "OSPF Area Backbone",
+        "type": "pattern",
+        "pattern": "area=backbone",
+        "description": "OSPF area=backbone configured"
+      },
+      {
+        "name": "Default Route",
+        "type": "pattern",
+        "pattern": "ip\\s+route\\s+add\\s+gateway=",
+        "description": "Default gateway configured"
+      },
+      {
+        "name": "OSPF Distribute Default",
+        "type": "pattern",
+        "pattern": "routing\\s+ospf\\s+instance\\s+set\\s+.*distribute-default=",
+        "description": "OSPF distribute-default configured"
+      }
+    ]
+  },
+  "HQ2": {
+    "requirements": [
+      {
+        "name": "System Identity",
+        "type": "exact",
+        "command": "system identity set name=HQ2"
+      },
+      {
+        "name": "Loopback Bridge",
+        "type": "exact",
+        "command": "interface bridge add name=lo1 protocol-mode=none"
+      },
+      {
+        "name": "IP Address Configuration",
+        "type": "ip_addresses",
+        "require_lo1_32": true,
+        "min_ether_addresses": 3,
+        "expected_subnet_masks": [30, 24]
+      },
+      {
+        "name": "OSPF Router ID Configured",
+        "type": "pattern",
+        "pattern": "routing\\s+ospf\\s+instance\\s+set\\s+.*router-id=",
+        "description": "OSPF router-id configured"
+      },
+      {
+        "name": "OSPF Networks Configured",
+        "type": "pattern",
+        "pattern": "routing\\s+ospf\\s+network\\s+add\\s+network=",
+        "description": "At least one OSPF network configured"
+      },
+      {
+        "name": "OSPF Area Backbone",
+        "type": "pattern",
+        "pattern": "area=backbone",
+        "description": "OSPF area=backbone configured"
+      }
+    ]
+  },
+  "HQ3": {
+    "requirements": [
+      {
+        "name": "System Identity",
+        "type": "exact",
+        "command": "system identity set name=HQ3"
+      },
+      {
+        "name": "Loopback Bridge",
+        "type": "exact",
+        "command": "interface bridge add name=lo1 protocol-mode=none"
+      },
+      {
+        "name": "IP Address Configuration",
+        "type": "ip_addresses",
+        "require_lo1_32": true,
+        "min_ether_addresses": 2,
+        "expected_subnet_masks": [30]
+      },
+      {
+        "name": "OSPF Router ID Configured",
+        "type": "pattern",
+        "pattern": "routing\\s+ospf\\s+instance\\s+set\\s+.*router-id=",
+        "description": "OSPF router-id configured"
+      },
+      {
+        "name": "OSPF Networks Configured",
+        "type": "pattern",
+        "pattern": "routing\\s+ospf\\s+network\\s+add\\s+network=",
+        "description": "At least one OSPF network configured"
+      },
+      {
+        "name": "OSPF Area Backbone",
+        "type": "pattern",
+        "pattern": "area=backbone",
+        "description": "OSPF area=backbone configured"
+      }
+    ]
+  }
+}

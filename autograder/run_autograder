@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd /autograder
+python3 source/verify_config.py

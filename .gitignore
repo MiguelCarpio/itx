@@ -1,0 +1,9 @@
+# Prevent uploading the autograder expected configurations (answer key)
+autograder/expected_configs.json
+
+# Autograder package
+autograder.zip
+
+# Local testing files (temporary/generated)
+test_submission/
+test_results.txt
