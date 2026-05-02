@@ -5,5 +5,5 @@ autograder/expected_configs.json
 autograder.zip
 
 # Local testing files (temporary/generated)
-test_submission/
+test_submission/*.txt
 test_results.txt
